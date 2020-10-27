@@ -11,7 +11,7 @@ require(VGAM)
 # @param data: Data frame that contains the data used for the regression
 # @param pod_assumption: Whether the regression should be run using the proportional odds assumption (TRUE or FALSE)
 # @return: A named matrix with all the coefficients and their corresponding p-values
-  regression_contingency_table <- function(formula, data, pod_assumption){
+regression_contingency_table <- function(formula, data, pod_assumption){
   # Run the regression using vglm from the VGAM package
   regression_results <- vglm(formula, family = cumulative(parallel = pod_assumption), data=data)
   # Get the number of output
