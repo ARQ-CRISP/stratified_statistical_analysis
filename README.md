@@ -14,13 +14,13 @@ The method called `regression_contingency_table` runs a cumulative logit model o
 
 In this case, the formula needs to contain indicator variables that we can manually define
 ```R
-z1 <- ifelse(levels=="level 1",1,0)
-z2 <- ifelse(levels=="level 2",1,0)
-z3 <- ifelse(levels=="level 3",1,0)
+level1 <- ifelse(levels=="level 1",1,0)
+level2 <- ifelse(levels=="level 2",1,0)
+level3 <- ifelse(levels=="level 3",1,0)
 ```
 Then running 
 ```R
-res <- regression_contingency_table(cbind(outcome 1, outcome 2, outcome 3, outcome 4) ~ z1 + z2, dataframe_example, pod_assumption=TRUE)
+res <- regression_contingency_table(cbind(outcome 1, outcome 2, outcome 3, outcome 4) ~ level1 + level2, dataframe_example, pod_assumption=TRUE)
 ```
 would return all the pairwise comparisons (with level 3 as reference) with the corresponding p-values allowing you to rank the three levels over the entire distribution. Using `pod_assumption=FALSE` will return the pairwise comparisons values and p-values for each outcome separately.
 
