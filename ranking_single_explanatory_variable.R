@@ -22,9 +22,16 @@ regression_contingency_table <- function(formula, data, pod_assumption){
   effect_coefficents <- regression_results@coefficients[outcome_numbers:output_number]
   # Extract the number of levels of the explanatory variable
   number_levels <- length(regression_results@assign)
-  # Name given to each level (expect the one taken as reference)
+  # Name given to each level (except the one taken as reference)
   effect_names <- names(effect_coefficents)
-  # Values corresponding to each level (expect the one taken as reference)
+  if (!pod_assumption){
+    for (i in 1:length(effect_names)){
+      split_coefficient <- as.list(strsplit(effect_names[i], ':')[[1]])
+      index_outcome = strtoi(split_coefficient[2])
+      effect_names[i] <- paste(split_coefficient[1], regression_results@extra$colnames.y[index_outcome], sep=":")
+    } 
+  }
+  # Values corresponding to each level (except the one taken as reference)
   effect_values <-unname(effect_coefficents)
   # Create a vector initialized with the same values as the effect of each level against the reference
   all_values <- effect_values
