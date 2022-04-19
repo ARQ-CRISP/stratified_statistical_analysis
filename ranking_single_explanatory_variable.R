@@ -5,13 +5,12 @@ if(length(new.packages)) install.packages(new.packages)
 # Makes sure VGAM is loaded
 require(VGAM)
 
-# First function for which data are represented as a contigency table.
-# Therefore, this function only supports regression with a single categorical explanatory variable, expressed using indicators (see examples)
+# First function that only supports regression with a single categorical explanatory variable. The data can be provided following two different formats; as a contingency table or as a list of experiments (see the examples in the README).
 # @param formula: Relation between the response and explanatory variables, must follow the syntax a~b.
 # @param data: Data frame that contains the data used for the regression
 # @param pod_assumption: Whether the regression should be run using the proportional odds assumption (TRUE or FALSE)
 # @return: A named matrix with all the coefficients and their corresponding p-values
-regression_contingency_table <- function(formula, data, pod_assumption){
+regression_single_variable <- function(formula, data, pod_assumption){
   # Run the regression using vglm from the VGAM package
   regression_results <- vglm(formula, family = cumulative(parallel = pod_assumption), data=data)
   # Get the number of output
@@ -21,7 +20,7 @@ regression_contingency_table <- function(formula, data, pod_assumption){
   # Extract only the coefficients that are related to the effect of each level of the explanatory variable (ignore the intercepts)
   effect_coefficents <- regression_results@coefficients[outcome_numbers:output_number]
   # Extract the number of levels of the explanatory variable
-  number_levels <- length(regression_results@assign)
+  number_levels <- sum(lengths(regression_results@assign))
   # Name given to each level (except the one taken as reference)
   effect_names <- names(effect_coefficents)
   if (!pod_assumption){
@@ -29,7 +28,7 @@ regression_contingency_table <- function(formula, data, pod_assumption){
       split_coefficient <- as.list(strsplit(effect_names[i], ':')[[1]])
       index_outcome = strtoi(split_coefficient[2])
       effect_names[i] <- paste(split_coefficient[1], regression_results@extra$colnames.y[index_outcome], sep=":")
-    } 
+    }
   }
   # Values corresponding to each level (except the one taken as reference)
   effect_values <-unname(effect_coefficents)
